@@ -34,7 +34,7 @@ cd Stockagent
 
 The simulation is configured through `util.py`. Key configuration parameters include:
 
-- `DEEPSEEK_API_KEY`: Your DeepSeek API key
+- `GEMINI_API_KEY`: Your GEMINI API key
 - `AGENTS_NUM`: Number of trading agents (default: 20)
 - `TOTAL_DATE`: Simulation duration in days (default: 180)
 - `TOTAL_SESSION`: Trading sessions per day (default: 3)
@@ -48,7 +48,7 @@ The simulation is configured through `util.py`. Key configuration parameters inc
 To run the simulation:
 
 ```bash
-python main.py
+python app.py
 ```
 
 The simulation will:
