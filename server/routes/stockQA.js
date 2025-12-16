@@ -1,15 +1,11 @@
 require("dotenv").config();
 const express = require("express");
 const router = express.Router();
-const OpenAI = require("openai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-// Initialize OpenAI (DeepSeek API)
-const openai = new OpenAI({
-    baseURL: "https://api.deepseek.com",
-    apiKey: process.env.OPENAI_API_KEY,
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
-// Create Q&A endpoint
 router.post('/ask', async (req, res) => {
     try {
         const { question } = req.body;
@@ -17,7 +13,6 @@ router.post('/ask', async (req, res) => {
             return res.status(400).json({ error: "Question is required" });
         }
 
-        // Build prompt in English
         const prompt = `
 You are a professional stock investment advisor. Please answer the following question in English, ensuring your answer is professional, accurate and in English.
 
@@ -38,15 +33,10 @@ Make sure your answer is:
 Please answer ONLY in English, no matter what language the question is.
 `;
 
-        // Call AI API
-        const completion = await openai.chat.completions.create({
-            messages: [{ role: "user", content: prompt }],
-            model: "deepseek-chat",
-        });
-
-        const answer = completion.choices[0].message.content;
-
-        // Return answer
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const answer = response.text();
+        
         res.json({ 
             answer,
             timestamp: new Date().toISOString()
@@ -61,4 +51,4 @@ Please answer ONLY in English, no matter what language the question is.
     }
 });
 
-module.exports = router; 
+module.exports = router;
